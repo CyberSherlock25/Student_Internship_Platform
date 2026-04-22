@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Servlet for handling user login
@@ -38,13 +39,16 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String rememberMe = request.getParameter("rememberMe");
+        String contextPath = request.getContextPath();
         
         // Validation
         if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            response.sendRedirect("login.jsp?error=Email and password are required");
+            response.sendRedirect(contextPath + "/login.jsp?error=Email+and+password+are+required");
             return;
         }
         
+        email = email.trim().toLowerCase(Locale.ROOT);
+
         // Authenticate user
         User user = userDAO.authenticate(email, password);
         
@@ -64,15 +68,15 @@ public class LoginServlet extends HttpServlet {
             
             // Redirect based on role
             if (user.isAdmin()) {
-                response.sendRedirect("admin/dashboard.jsp");
+                response.sendRedirect(contextPath + "/admin/dashboard.jsp");
             } else if (user.isStudent()) {
-                response.sendRedirect("student/dashboard.jsp");
+                response.sendRedirect(contextPath + "/student/dashboard.jsp");
             } else {
-                response.sendRedirect("index.jsp?error=Invalid user role");
+                response.sendRedirect(contextPath + "/index.jsp?error=Invalid+user+role");
             }
         } else {
             // Authentication failed
-            response.sendRedirect("login.jsp?error=Invalid email or password");
+            response.sendRedirect(contextPath + "/login.jsp?error=Invalid+email+or+password");
         }
     }
 }

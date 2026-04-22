@@ -167,24 +167,24 @@
 
         <%
             String error = request.getParameter("error");
-            if (error != null) {
+            if (error != null && !error.trim().isEmpty()) {
         %>
         <div class="error-message show">
-            <strong>Login Failed:</strong> Invalid email or password. Please try again.
+            <strong>Login Failed:</strong> <%= error %>
         </div>
         <%
             }
         %>
 
-        <form method="POST" action="login">
+        <form method="POST" action="<%= request.getContextPath() %>/login">
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="username" required>
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
             </div>
 
             <div class="checkbox-group">
@@ -198,7 +198,7 @@
         </form>
 
         <div class="signup-link">
-            Don't have an account? <a href="register.jsp">Register here</a>
+            Need access? Contact your administrator for an account.
         </div>
     </div>
 </body>
