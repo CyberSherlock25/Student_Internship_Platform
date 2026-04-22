@@ -12,109 +12,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal</title>
+    <title>Student Portal - InternshipHub</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/student/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">🎓 InternshipHub</div>
-        <div class="user-info">
-            <span>Welcome, <%= user.getName() %></span>
-            <form action="<%= request.getContextPath() %>/logout" method="POST" style="display:inline;">
-                <button type="submit">Logout</button>
-            </form>
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span class="brand-text">InternshipHub</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="<%= request.getContextPath() %>/student/dashboard.jsp" class="nav-link active">
+                    <i class="fas fa-home"></i> Dashboard
+                </a></li>
+                <li><a href="<%= request.getContextPath() %>/student/browse-internships.jsp" class="nav-link">
+                    <i class="fas fa-briefcase"></i> Browse Internships
+                </a></li>
+                <li><a href="<%= request.getContextPath() %>/student/my-applications.jsp" class="nav-link">
+                    <i class="fas fa-file-alt"></i> My Applications
+                </a></li>
+                <li><a href="<%= request.getContextPath() %>/student/profile.jsp" class="nav-link">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a></li>
+            </ul>
+            <div class="nav-user">
+                <div class="user-menu">
+                    <span class="user-name"><%= user.getName() %></span>
+                    <form action="<%= request.getContextPath() %>/logout" method="POST" style="display:inline;">
+                        <button type="submit" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <div class="welcome-banner">
-        <h2>Welcome back, <%= user.getName() %>! 👋</h2>
-        <p>Explore exciting internship opportunities, track your applications, and ace your exams all in one place.</p>
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>Welcome back, <%= user.getName() %>! 👋</h1>
+            <p>Track your internship journey, explore opportunities, and manage your applications all in one place.</p>
+        </div>
+        <div class="hero-bg-pattern"></div>
     </div>
 
-    <div class="container">
-        <h1 class="section-title">Your Dashboard</h1>
-        <p class="section-subtitle">Your internship journey at a glance</p>
-        
-        <div class="dashboard-grid" id="dashboardCards">
-            <p>Loading statistics...</p>
-        </div>
+    <main class="main-content">
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <h2 class="section-title">Your Progress</h2>
+            <div class="stats-grid" id="dashboardCards">
+                <div class="stat-card loading">
+                    <div class="skeleton"></div>
+                </div>
+                <div class="stat-card loading">
+                    <div class="skeleton"></div>
+                </div>
+                <div class="stat-card loading">
+                    <div class="skeleton"></div>
+                </div>
+                <div class="stat-card loading">
+                    <div class="skeleton"></div>
+                </div>
+            </div>
+        </section>
 
-        <h2 class="section-title" style="margin-top: 3rem;">💼 Recommended Internships for You</h2>
-        <div id="recommendedInternships">
-            <p>Loading internships...</p>
-        </div>
+        <!-- Recommended Internships Section -->
+        <section class="internships-section">
+            <div class="section-header">
+                <h2 class="section-title">💼 Recommended For You</h2>
+                <a href="<%= request.getContextPath() %>/student/browse-internships.jsp" class="view-all-btn">View All →</a>
+            </div>
+            <div class="internships-container" id="recommendedInternships">
+                <p class="loading-text">Loading opportunities...</p>
+            </div>
+        </section>
 
-        <h2 class="section-title" style="margin-top: 3rem;">📋 Recent Applications</h2>
-        <div id="recentApplications">
-            <p>Loading applications...</p>
-        </div>
-    </div>
+        <!-- Recent Applications Section -->
+        <section class="applications-section">
+            <div class="section-header">
+                <h2 class="section-title">📋 Your Applications</h2>
+                <a href="<%= request.getContextPath() %>/student/my-applications.jsp" class="view-all-btn">View All →</a>
+            </div>
+            <div class="applications-container" id="recentApplications">
+                <p class="loading-text">Loading applications...</p>
+            </div>
+        </section>
+    </main>
 
     <script>
         const contextPath = '<%= request.getContextPath() %>';
         
         function loadDashboardStats() {
-            console.log('Loading from: ' + contextPath + '/student/dashboard-stats');
             fetch(contextPath + '/student/dashboard-stats')
                 .then(r => {
-                    console.log('Response status:', r.status);
                     if (!r.ok) throw new Error('HTTP ' + r.status);
                     return r.json();
                 })
                 .then(data => {
-                    console.log('Data:', data);
                     if (data.success) {
                         const s = data.statistics;
                         document.getElementById('dashboardCards').innerHTML = `
-                            <div class="card">
-                                <div class="card-icon">📋</div>
-                                <div class="card-title">My Applications</div>
-                                <div class="card-value">${s.totalApplications}</div>
+                            <div class="stat-card">
+                                <div class="stat-icon applications">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Total Applications</div>
+                                    <div class="stat-value">${s.totalApplications}</div>
+                                </div>
                             </div>
-                            <div class="card">
-                                <div class="card-icon">⭐</div>
-                                <div class="card-title">Shortlisted</div>
-                                <div class="card-value">${s.shortlisted}</div>
+                            <div class="stat-card">
+                                <div class="stat-icon shortlisted">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Shortlisted</div>
+                                    <div class="stat-value">${s.shortlisted}</div>
+                                </div>
                             </div>
-                            <div class="card">
-                                <div class="card-icon">✅</div>
-                                <div class="card-title">Accepted</div>
-                                <div class="card-value">${s.accepted}</div>
+                            <div class="stat-card">
+                                <div class="stat-icon accepted">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Accepted</div>
+                                    <div class="stat-value">${s.accepted}</div>
+                                </div>
                             </div>
-                            <div class="card">
-                                <div class="card-icon">🔍</div>
-                                <div class="card-title">Open Positions</div>
-                                <div class="card-value">${s.openInternships}</div>
+                            <div class="stat-card">
+                                <div class="stat-icon open">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Open Positions</div>
+                                    <div class="stat-value">${s.openInternships}</div>
+                                </div>
                             </div>
                         `;
                         
                         if (data.recommendedInternships && data.recommendedInternships.length > 0) {
                             let html = '';
-                            data.recommendedInternships.forEach(i => {
-                                html += `<div class="internship-card">
-                                    <div class="internship-header">
-                                        <div>
-                                            <div class="internship-title">${i.jobTitle}</div>
-                                            <div class="internship-company">ID: ${i.internshipId}</div>
+                            data.recommendedInternships.slice(0, 3).forEach(i => {
+                                html += `
+                                    <div class="internship-card">
+                                        <div class="internship-badge">RECOMMENDED</div>
+                                        <div class="internship-header">
+                                            <h3>${i.jobTitle}</h3>
+                                            <p class="company-name">ID: ${i.internshipId}</p>
                                         </div>
-                                        <span class="badge badge-active">Active</span>
-                                    </div>
-                                    <div class="internship-details">
-                                        <div class="detail-item">📍 ${i.jobLocation}</div>
-                                        <div class="detail-item">💰 ₹${i.stipendAmount}/month</div>
-                                        <div class="detail-item">⏱️ ${i.durationMonths} months</div>
-                                        <div class="detail-item">📅 Deadline: ${i.applicationDeadline}</div>
-                                    </div>
-                                    <button class="apply-btn" onclick="alert('Apply to: ' + '${i.jobTitle}')">View & Apply →</button>
-                                </div>`;
+                                        <div class="internship-details">
+                                            <span class="detail"><i class="fas fa-map-marker-alt"></i> ${i.jobLocation}</span>
+                                            <span class="detail"><i class="fas fa-rupee-sign"></i> ₹${i.stipendAmount}/month</span>
+                                            <span class="detail"><i class="fas fa-calendar"></i> ${i.durationMonths} months</span>
+                                        </div>
+                                        <button class="apply-btn" onclick="window.location.href='${contextPath}/student/browse-internships.jsp?id=${i.internshipId}'">
+                                            View & Apply <i class="fas fa-arrow-right"></i>
+                                        </button>
+                                    </div>`;
                             });
-                            document.getElementById('recommendedInternships').innerHTML = html;
+                            document.getElementById('recommendedInternships').innerHTML = html || '<p class="empty-msg">No recommendations yet</p>';
                         }
                     }
                 })
                 .catch(e => {
                     console.error('Error:', e);
-                    document.getElementById('dashboardCards').innerHTML = '<p>Error loading data</p>';
+                    document.getElementById('dashboardCards').innerHTML = '<p class="error-msg">Error loading statistics</p>';
                 });
         }
         
