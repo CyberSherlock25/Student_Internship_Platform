@@ -128,6 +128,10 @@ public class User implements Serializable {
         return "STUDENT".equals(this.role);
     }
 
+    public String getName() {
+        return this.fullName;
+    }
+
     public boolean isActive() {
         return "ACTIVE".equals(this.status);
     }

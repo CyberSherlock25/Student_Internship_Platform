@@ -48,6 +48,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Application Review - Admin Dashboard</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
     <style>
         * {
             margin: 0;
@@ -456,7 +457,8 @@
         }
     </style>
 </head>
-<body>
+<body class="app-layout" data-page="applications">
+    <%@ include file="../components/navbar.jsp" %>
     <div class="container">
         <div class="header">
             <h1>📋 Application Review</h1>
@@ -751,5 +753,6 @@
             }
         };
     </script>
+    <script src="<%= request.getContextPath() %>/js/navbar.js"></script>
 </body>
 </html>

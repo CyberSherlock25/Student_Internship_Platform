@@ -86,6 +86,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Internships - InternshipHub</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -549,23 +550,8 @@
         }
     </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="navbar-brand">🎓 InternshipHub</div>
-        <ul class="navbar-menu">
-            <li><a href="<%= request.getContextPath() %>/student/dashboard.jsp">Dashboard</a></li>
-            <li><a href="<%= request.getContextPath() %>/student/browse-internships.jsp">Browse</a></li>
-            <li><a href="<%= request.getContextPath() %>/student/my-applications.jsp">My Applications</a></li>
-            <li><a href="<%= request.getContextPath() %>/student/profile.jsp">Profile</a></li>
-        </ul>
-        <div class="navbar-right">
-            <span>Welcome, <%= user.getFirstName() %></span>
-            <form action="<%= request.getContextPath() %>/logout" method="POST" style="margin: 0;">
-                <button type="submit" class="btn btn-primary" style="margin: 0;">Logout</button>
-            </form>
-        </div>
-    </nav>
+<body class="app-layout" data-page="internships">
+    <%@ include file="../components/navbar.jsp" %>
 
     <div class="container">
         <!-- Page Header -->
@@ -779,5 +765,6 @@
             }
         }
     </script>
+    <script src="<%= request.getContextPath() %>/js/navbar.js"></script>
 </body>
 </html>

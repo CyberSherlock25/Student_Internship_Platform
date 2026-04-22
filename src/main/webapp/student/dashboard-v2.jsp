@@ -13,18 +13,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Portal</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/student/dashboard.css">
 </head>
-<body>
-    <nav class="navbar">
-        <div class="logo">🎓 InternshipHub</div>
-        <div class="user-info">
-            <span>Welcome, <%= user.getFullName() %></span>
-            <form action="<%= request.getContextPath() %>/logout" method="POST" style="display:inline;">
-                <button type="submit">Logout</button>
-            </form>
-        </div>
-    </nav>
+<body class="app-layout" data-page="dashboard">
+    <%@ include file="../components/navbar.jsp" %>
 
     <div class="welcome-banner">
         <h2>Welcome back, <%= user.getFullName() %>! 👋</h2>
@@ -120,5 +113,6 @@
         
         document.addEventListener('DOMContentLoaded', loadDashboardStats);
     </script>
+    <script src="<%= request.getContextPath() %>/js/navbar.js"></script>
 </body>
 </html>

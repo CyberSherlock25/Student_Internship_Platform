@@ -14,6 +14,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Internship & Examination System</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
     <style>
         * {
             margin: 0;
@@ -100,10 +101,10 @@
         }
 
         .main-content {
-            margin-left: 250px;
-            margin-top: 60px;
+            margin-left: 0;
+            margin-top: 0;
             padding: 2rem;
-            min-height: calc(100vh - 60px);
+            min-height: auto;
         }
 
         .header {
@@ -320,31 +321,8 @@
         }
     </style>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">
-            🎓 InternshipHub Admin
-        </div>
-        <div class="user-info">
-            <span>Welcome, <%= user.getFullName() %></span>
-            <form action="<%= request.getContextPath() %>/logout" method="POST" style="display: inline;">
-                <button type="submit" class="logout-btn">Logout</button>
-            </form>
-        </div>
-    </nav>
-
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <a href="#dashboard" class="menu-item active">📊 Dashboard</a>
-        <a href="#companies" class="menu-item">🏢 Companies</a>
-        <a href="#internships" class="menu-item">💼 Internships</a>
-        <a href="#applications" class="menu-item">📝 Applications</a>
-        <a href="#exams" class="menu-item">📚 Exams</a>
-        <a href="#users" class="menu-item">👥 Users</a>
-        <a href="#reports" class="menu-item">📈 Reports</a>
-        <a href="#settings" class="menu-item">⚙️ Settings</a>
-    </aside>
+<body class="app-layout" data-page="dashboard">
+    <%@ include file="../components/navbar.jsp" %>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -460,14 +438,6 @@
         </div>
     </div>
 
-    <script>
-        // Add active state to sidebar based on current section
-        document.querySelectorAll('.sidebar .menu-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.sidebar .menu-item').forEach(el => el.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-    </script>
+    <script src="<%= request.getContextPath() %>/js/navbar.js"></script>
 </body>
 </html>

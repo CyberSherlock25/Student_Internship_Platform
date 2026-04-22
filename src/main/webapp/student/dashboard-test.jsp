@@ -11,9 +11,14 @@
 <html>
 <head>
     <title>Dashboard Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
 </head>
-<body>
-    <h1>Dashboard Test for <%= user.getName() %></h1>
+<body class="app-layout" data-page="dashboard">
+    <%@ include file="../components/navbar.jsp" %>
+
+    <h1>Dashboard Test for <%= user.getFullName() %></h1>
     <button onclick="testFetch()">Load Data</button>
     <div id="result"></div>
     
@@ -30,5 +35,6 @@
                 });
         }
     </script>
+    <script src="<%= request.getContextPath() %>/js/navbar.js"></script>
 </body>
 </html>

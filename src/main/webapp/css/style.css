@@ -1,0 +1,303 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
+
+:root {
+    --bg-main: #f4f7ff;
+    --bg-surface: rgba(255, 255, 255, 0.76);
+    --bg-elevated: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #546179;
+    --accent: #0f766e;
+    --accent-soft: #dcfce7;
+    --stroke: rgba(15, 23, 42, 0.1);
+    --shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+}
+
+:root[data-theme="dark"] {
+    --bg-main: #0b1220;
+    --bg-surface: rgba(15, 23, 42, 0.78);
+    --bg-elevated: #111c33;
+    --text-main: #e5edf9;
+    --text-muted: #9fb1d2;
+    --accent: #34d399;
+    --accent-soft: rgba(52, 211, 153, 0.12);
+    --stroke: rgba(148, 163, 184, 0.24);
+    --shadow: 0 18px 36px rgba(2, 6, 23, 0.55);
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body.app-layout {
+    margin: 0;
+    padding-top: 72px;
+    padding-left: 260px;
+    background: radial-gradient(circle at top right, rgba(15, 118, 110, 0.18), transparent 50%), var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.25s ease, color 0.25s ease, padding-left 0.25s ease;
+}
+
+body.app-layout.sidebar-collapsed {
+    padding-left: 92px;
+}
+
+.app-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1300;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--stroke);
+    backdrop-filter: blur(16px);
+    background: var(--bg-surface);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+}
+
+.app-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.app-brand i {
+    color: var(--accent);
+}
+
+.app-topbar-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.app-user-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--stroke);
+    border-radius: 999px;
+    padding: 6px 12px;
+    background: var(--bg-elevated);
+    color: var(--text-main);
+    max-width: 240px;
+}
+
+.app-user-chip span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.app-icon-btn {
+    border: 1px solid var(--stroke);
+    background: var(--bg-elevated);
+    color: var(--text-main);
+    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.app-icon-btn:hover {
+    transform: translateY(-1px);
+    background: var(--accent-soft);
+}
+
+.app-sidebar {
+    position: fixed;
+    top: 72px;
+    bottom: 0;
+    left: 0;
+    width: 260px;
+    z-index: 1250;
+    border-right: 1px solid var(--stroke);
+    background: var(--bg-surface);
+    backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.25s ease, transform 0.25s ease;
+    box-shadow: var(--shadow);
+}
+
+body.app-layout.sidebar-collapsed .app-sidebar {
+    width: 92px;
+}
+
+.app-sidebar-header {
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid var(--stroke);
+}
+
+.app-role-label {
+    margin: 0;
+    font-size: 11px;
+    letter-spacing: 1.1px;
+    color: var(--text-muted);
+}
+
+.app-sidebar-header h2 {
+    margin: 4px 0 0;
+    font-size: 18px;
+    color: var(--text-main);
+}
+
+.app-nav {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+}
+
+.app-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-main);
+    border-radius: 10px;
+    padding: 10px 12px;
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.app-nav-link i {
+    width: 18px;
+    text-align: center;
+}
+
+.app-nav-link:hover {
+    background: var(--accent-soft);
+    transform: translateX(2px);
+}
+
+.app-nav-link.active {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+.app-sidebar-footer {
+    margin-top: auto;
+    padding: 12px;
+    border-top: 1px solid var(--stroke);
+}
+
+.app-logout-btn {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #ef4444;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.app-sidebar-backdrop {
+    display: none;
+}
+
+body.app-layout.sidebar-collapsed .app-sidebar-header h2,
+body.app-layout.sidebar-collapsed .app-role-label,
+body.app-layout.sidebar-collapsed .app-nav-link span,
+body.app-layout.sidebar-collapsed .app-logout-btn span {
+    display: none;
+}
+
+body.app-layout.sidebar-collapsed .app-nav-link,
+body.app-layout.sidebar-collapsed .app-logout-btn {
+    justify-content: center;
+}
+
+:root[data-theme="dark"] .container,
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .stat-card,
+:root[data-theme="dark"] .profile-container,
+:root[data-theme="dark"] .applications-container,
+:root[data-theme="dark"] .filter-panel,
+:root[data-theme="dark"] .internship-card,
+:root[data-theme="dark"] .modal-content,
+:root[data-theme="dark"] .page-header,
+:root[data-theme="dark"] .section,
+:root[data-theme="dark"] .profile-content,
+:root[data-theme="dark"] .header,
+:root[data-theme="dark"] .content {
+    background: var(--bg-elevated) !important;
+    color: var(--text-main) !important;
+    border-color: var(--stroke) !important;
+}
+
+:root[data-theme="dark"] .section-title,
+:root[data-theme="dark"] .application-title,
+:root[data-theme="dark"] .detail-value,
+:root[data-theme="dark"] .card-title,
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] p,
+:root[data-theme="dark"] label,
+:root[data-theme="dark"] span,
+:root[data-theme="dark"] td,
+:root[data-theme="dark"] th,
+:root[data-theme="dark"] div {
+    color: var(--text-main);
+}
+
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] button {
+    background: #0f172a;
+    color: var(--text-main);
+    border-color: var(--stroke);
+}
+
+@media (max-width: 992px) {
+    body.app-layout {
+        padding-left: 0;
+    }
+
+    body.app-layout.sidebar-collapsed {
+        padding-left: 0;
+    }
+
+    .app-sidebar {
+        transform: translateX(-100%);
+    }
+
+    body.app-layout.sidebar-open .app-sidebar {
+        transform: translateX(0);
+    }
+
+    .app-sidebar-backdrop {
+        position: fixed;
+        inset: 72px 0 0 0;
+        background: rgba(2, 6, 23, 0.45);
+        z-index: 1200;
+    }
+
+    body.app-layout.sidebar-open .app-sidebar-backdrop {
+        display: block;
+    }
+
+    .app-user-chip {
+        max-width: 140px;
+    }
+}

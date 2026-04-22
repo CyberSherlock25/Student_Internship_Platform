@@ -38,6 +38,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Applications - InternshipHub</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
     <style>
         * {
             margin: 0;
@@ -386,23 +387,8 @@
         }
     </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="navbar-brand">🎓 InternshipHub</div>
-        <ul class="navbar-menu">
-            <li><a href="<%= request.getContextPath() %>/student/dashboard.jsp">Dashboard</a></li>
-            <li><a href="<%= request.getContextPath() %>/student/browse-internships.jsp">Browse</a></li>
-            <li><a href="<%= request.getContextPath() %>/student/my-applications.jsp">My Applications</a></li>
-            <li><a href="<%= request.getContextPath() %>/student/profile.jsp">Profile</a></li>
-        </ul>
-        <div class="navbar-right">
-            <span>Welcome, <%= user.getFirstName() %></span>
-            <form action="<%= request.getContextPath() %>/logout" method="POST" style="margin: 0;">
-                <button type="submit" class="btn btn-primary" style="margin: 0;">Logout</button>
-            </form>
-        </div>
-    </nav>
+<body class="app-layout" data-page="applications">
+    <%@ include file="../components/navbar.jsp" %>
 
     <div class="container">
         <!-- Page Header -->
@@ -556,5 +542,6 @@
             }, 5000);
         }
     </script>
+    <script src="<%= request.getContextPath() %>/js/navbar.js"></script>
 </body>
 </html>

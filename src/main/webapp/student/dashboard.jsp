@@ -13,42 +13,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Portal - InternshipHub</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/student/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <i class="fas fa-graduation-cap"></i>
-                <span class="brand-text">InternshipHub</span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="<%= request.getContextPath() %>/student/dashboard.jsp" class="nav-link active">
-                    <i class="fas fa-home"></i> Dashboard
-                </a></li>
-                <li><a href="<%= request.getContextPath() %>/student/browse-internships.jsp" class="nav-link">
-                    <i class="fas fa-briefcase"></i> Browse Internships
-                </a></li>
-                <li><a href="<%= request.getContextPath() %>/student/my-applications.jsp" class="nav-link">
-                    <i class="fas fa-file-alt"></i> My Applications
-                </a></li>
-                <li><a href="<%= request.getContextPath() %>/student/profile.jsp" class="nav-link">
-                    <i class="fas fa-user-circle"></i> Profile
-                </a></li>
-            </ul>
-            <div class="nav-user">
-                <div class="user-menu">
-                    <span class="user-name"><%= user.getFullName() %></span>
-                    <form action="<%= request.getContextPath() %>/logout" method="POST" style="display:inline;">
-                        <button type="submit" class="logout-btn">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </nav>
+<body class="app-layout" data-page="dashboard">
+    <%@ include file="../components/navbar.jsp" %>
 
     <div class="hero-section">
         <div class="hero-content">
@@ -184,5 +154,6 @@
         
         document.addEventListener('DOMContentLoaded', loadDashboardStats);
     </script>
+    <script src="<%= request.getContextPath() %>/js/navbar.js"></script>
 </body>
 </html>
