@@ -1,0 +1,16 @@
+# Database Configuration
+# Copy this file to database.properties and update with your settings
+
+# MySQL Connection Details
+db.driver=com.mysql.cj.jdbc.Driver
+db.url=jdbc:mysql://localhost:3306/internship_exam_system
+db.username=root
+db.password=your_mysql_password
+
+# Connection Pool Settings (Optional - for future enhancement)
+db.pool.size=10
+db.pool.maxsize=20
+db.pool.timeout=30000
+
+# Optional: TimeZone Configuration
+db.timezone=Asia/Kolkata
