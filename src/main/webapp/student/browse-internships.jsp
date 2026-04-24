@@ -693,78 +693,99 @@
     </div>
 
     <script>
-        function openApplicationModal(internshipId, company, position) {
-            document.getElementById('applicationModal').style.display = 'block';
-            document.getElementById('internshipId').value = internshipId;
-            document.getElementById('modalTitle').textContent = `Apply for ${position} at ${company}`;
-            document.getElementById('coverLetter').value = '';
-            updateCharCount();
+    function openApplicationModal(internshipId, company, position) {
+        document.getElementById('applicationModal').style.display = 'block';
+
+        // 🔥 SET INTERNSHIP ID (VERY IMPORTANT)
+        document.getElementById('internshipId').value = internshipId;
+
+        document.getElementById('modalTitle').textContent = 
+            "Apply for " + position + " at " + company;
+
+        document.getElementById('coverLetter').value = '';
+        updateCharCount();
+    }
+
+    function closeApplicationModal() {
+        document.getElementById('applicationModal').style.display = 'none';
+    }
+
+    function updateCharCount() {
+        const textarea = document.getElementById('coverLetter');
+        document.getElementById('charCount').textContent = textarea.value.length;
+    }
+
+    function submitApplication(event) {
+        event.preventDefault();
+
+        const internshipId = document.getElementById('internshipId').value;
+        const coverLetter = document.getElementById('coverLetter').value.trim();
+
+        // 🔥 VALIDATION
+        if (!internshipId) {
+            alert("Internship ID missing!");
+            return;
         }
 
-        function closeApplicationModal() {
-            document.getElementById('applicationModal').style.display = 'none';
+        if (coverLetter.length < 50) {
+            alert('Cover letter must be at least 50 characters.');
+            return;
         }
 
-        function updateCharCount() {
-            const textarea = document.getElementById('coverLetter');
-            document.getElementById('charCount').textContent = textarea.value.length;
-        }
+        // 🔥 SEND DATA (FIXED)
+        fetch('<%= request.getContextPath() %>/student/apply', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: "internshipId=" + internshipId + 
+                  "&coverLetter=" + encodeURIComponent(coverLetter)
+        })
+        .then(response => response.json())
+        .then(data => {
+            closeApplicationModal();
 
-        function submitApplication(event) {
-            event.preventDefault();
-            const coverLetter = document.getElementById('coverLetter').value.trim();
-            
-            if (coverLetter.length < 50) {
-                alert('Cover letter must be at least 50 characters.');
-                return;
+            if (data.success) {
+                showAlert('success', data.message);
+
+                setTimeout(() => {
+                    window.location.href = 
+                        '<%= request.getContextPath() %>/student/my-applications.jsp';
+                }, 2000);
+            } else {
+                showAlert('error', data.message);
             }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('error', 'Something went wrong!');
+        });
+    }
 
-            const formData = new FormData(document.getElementById('applicationForm'));
-            
-            fetch('<%= request.getContextPath() %>/student/apply', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                closeApplicationModal();
-                if (data.success) {
-                    showAlert('success', data.message);
-                    setTimeout(() => {
-                        window.location.href = '<%= request.getContextPath() %>/student/my-applications.jsp';
-                    }, 2000);
-                } else {
-                    showAlert('error', data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('error', 'An error occurred. Please try again.');
-            });
+    function showAlert(type, message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = "alert alert-" + type;
+        alertDiv.textContent = message;
+
+        document.querySelector('.container')
+            .insertBefore(alertDiv, document.querySelector('.page-header'));
+
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
+
+    // Live character count
+    document.getElementById('coverLetter')?.addEventListener('input', updateCharCount);
+
+    // Close modal outside click
+    window.onclick = function(event) {
+        const modal = document.getElementById('applicationModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
         }
-
-        function showAlert(type, message) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.textContent = message;
-            document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.page-header'));
-            
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 5000);
-        }
-
-        // Update character count as user types
-        document.getElementById('coverLetter')?.addEventListener('input', updateCharCount);
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('applicationModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
-    </script>
+    }
+</script>
     <script src="<%= request.getContextPath() %>/js/navbar.js"></script>
 </body>
 </html>

@@ -129,8 +129,8 @@ public class ApplicationDAO {
      * @return true if already applied, false otherwise
      */
     public boolean hasStudentApplied(int studentId, int internshipId) {
-        String sql = "SELECT COUNT(*) as count FROM student_applications " +
-                     "WHERE student_id = ? AND internship_id = ?";
+    	String sql = "SELECT COUNT(*) as count FROM applications "
+    			+ "WHERE student_id = ? AND internship_id = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -358,5 +358,46 @@ public class ApplicationDAO {
         if (updatedTs != null) application.setUpdatedAt(updatedTs.toLocalDateTime());
         
         return application;
+    }
+    public boolean applyForInternship(int studentId, int internshipId, int companyId) {
+        try (Connection conn = DBConnection.getConnection()) {
+
+            PreparedStatement ps = conn.prepareStatement(
+                "INSERT INTO applications (student_id, internship_id, company_id, status) VALUES (?, ?, ?, 'PENDING')"
+            );
+
+            ps.setInt(1, studentId);
+            ps.setInt(2, internshipId);
+            ps.setInt(3, companyId);
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return false; // already applied
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public int getCompanyIdByInternship(int internshipId) {
+        try (Connection conn = DBConnection.getConnection()) {
+
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT company_id FROM internships WHERE internship_id=?"
+            );
+
+            ps.setInt(1, internshipId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("company_id");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

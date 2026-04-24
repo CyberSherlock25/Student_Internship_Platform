@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 
-@WebServlet("/student/apply")
+@WebServlet("/student/application")
 public class StudentApplicationServlet extends HttpServlet {
     private final ApplicationDAO applicationDAO = new ApplicationDAO();
     private final StudentDAO studentDAO = new StudentDAO();
