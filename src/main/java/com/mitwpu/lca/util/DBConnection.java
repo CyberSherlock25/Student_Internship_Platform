@@ -22,7 +22,7 @@ public class DBConnection {
         String driver = "com.mysql.cj.jdbc.Driver";
         String url = "jdbc:mysql://localhost:3306/internship_exam_system";
         String user = "root";
-        String password = "";
+        String password = "root";
 
         try (InputStream input = DBConnection.class.getClassLoader()
                 .getResourceAsStream("database.properties")) {
