@@ -26,7 +26,7 @@
         return;
     }
 
-    // Get all internships
+    // Get all Internships
     InternshipDAO internshipDAO = new InternshipDAO();
     CompanyDAO companyDAO = new CompanyDAO();
     List<Internship> allInternships = internshipDAO.getOpenInternships();
