@@ -60,7 +60,7 @@
             continue;
         }
         
-        if (!locationFilter.isEmpty() && !internship.getLocation().equalsIgnoreCase(locationFilter)) {
+        if (!locationFilter.isEmpty() && !internship.getJobLocation().equalsIgnoreCase(locationFilter)) {
             continue;
         }
         
@@ -70,8 +70,8 @@
         
         if (!searchQuery.isEmpty()) {
             String query = searchQuery.toLowerCase();
-            if (!internship.getPositionTitle().toLowerCase().contains(query) && 
-                !internship.getDescription().toLowerCase().contains(query)) {
+            if (!internship.getJobTitle().toLowerCase().contains(query) && 
+                !internship.getJobDescription().toLowerCase().contains(query)) {
                 continue;
             }
         }
@@ -625,13 +625,13 @@
                             <div class="internship-card">
                                 <div class="card-header">
                                     <div class="company-name"><%= companyName %></div>
-                                    <div class="position-title"><%= internship.getPositionTitle() %></div>
+                                    <div class="position-title"><%= internship.getJobTitle() %></div>
                                 </div>
                                 <div class="card-body">
                                     <div class="internship-meta">
                                         <div class="meta-item">
                                             <span class="meta-label">📍 Location:</span>
-                                            <span class="location-badge"><%= internship.getLocation() %></span>
+                                            <span class="location-badge"><%= internship.getJobLocation() %></span>
                                         </div>
                                         <div class="meta-item">
                                             <span class="meta-label">💰 Stipend:</span>
@@ -647,13 +647,13 @@
                                         </div>
                                     </div>
                                     <div class="description">
-                                        <%= internship.getDescription().length() > 150 ? 
-                                            internship.getDescription().substring(0, 150) + "..." : 
-                                            internship.getDescription() %>
+                                        <%= internship.getJobDescription().length() > 150 ? 
+                                            internship.getJobDescription().substring(0, 150) + "..." : 
+                                            internship.getJobDescription() %>
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button class="btn-apply" onclick="openApplicationModal(<%= internship.getInternshipId() %>, '<%= companyName %>', '<%= internship.getPositionTitle() %>')">Apply Now</button>
+                                    <button class="btn-apply" onclick="openApplicationModal(<%= internship.getInternshipId() %>, '<%= companyName %>', '<%= internship.getJobTitle() %>')" >Apply Now</button>
                                 </div>
                             </div>
                         <% } %>

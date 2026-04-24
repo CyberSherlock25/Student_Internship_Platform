@@ -440,7 +440,7 @@
                     <div class="application-item">
                         <div class="application-header">
                             <div>
-                                <div class="application-title"><%= internship.getPositionTitle() %></div>
+                                <div class="application-title"><%= internship.getJobTitle() %></div>
                                 <div class="application-company">@ <%= companyName %></div>
                             </div>
                             <span class="status-badge status-<%= app.getStatus().toLowerCase() %>">
@@ -455,7 +455,7 @@
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Location</span>
-                                <span class="detail-value"><%= internship.getLocation() %></span>
+                                <span class="detail-value"><%= internship.getJobLocation() %></span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Duration</span>
