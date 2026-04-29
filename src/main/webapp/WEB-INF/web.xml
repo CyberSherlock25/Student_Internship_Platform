@@ -23,43 +23,6 @@
         <url-pattern>/student/*</url-pattern>
     </filter-mapping>
 
-    <!-- Servlet declarations for explicit mapping (in addition to @WebServlet) 
-    <servlet>
-        <servlet-name>ExamServlet</servlet-name>
-        <servlet-class>com.mitwpu.lca.servlet.ExamServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ExamServlet</servlet-name>
-        <url-pattern>/exam</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>ExamAttemptServlet</servlet-name>
-        <servlet-class>com.mitwpu.lca.servlet.ExamAttemptServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ExamAttemptServlet</servlet-name>
-        <url-pattern>/attempt</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>AnswerServlet</servlet-name>
-        <servlet-class>com.mitwpu.lca.servlet.AnswerServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>AnswerServlet</servlet-name>
-        <url-pattern>/answer</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>ReportServlet</servlet-name>
-        <servlet-class>com.mitwpu.lca.servlet.ReportServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ReportServlet</servlet-name>
-        <url-pattern>/report</url-pattern>
-    </servlet-mapping> -->
-
     <!-- Session Configuration -->
     <session-config>
         <cookie-config>
