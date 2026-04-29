@@ -1,299 +1,233 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.*, com.mitwpu.lca.model.*" %>
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Take Exam</title>
-
-```
-<style>
-    body {
-        font-family: Arial;
-        background: #f4f6fb;
-        margin: 0;
-    }
-
-    /* HEADER */
-    .header {
-        background: #1e293b;
-        color: white;
-        padding: 15px 20px;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .timer {
-        background: #dc2626;
-        padding: 5px 12px;
-        border-radius: 6px;
-    }
-
-    .violations {
-        background: #e5e7eb;
-        padding: 5px 12px;
-        border-radius: 6px;
-        color: black;
-    }
-
-    /* MAIN */
-    .container {
-        max-width: 700px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    }
-
-    h2 {
-        margin-bottom: 20px;
-    }
-
-    .option {
-        margin: 10px 0;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-
-    .option:hover {
-        background: #f1f5f9;
-    }
-
-    .buttons {
-        margin-top: 20px;
-    }
-
-    button {
-        padding: 8px 14px;
-        margin-right: 10px;
-        border: none;
-        background: #6366f1;
-        color: white;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background: #4f46e5;
-    }
-
-    .submit-btn {
-        background: #16a34a;
-    }
-
-    .submit-btn:hover {
-        background: #15803d;
-    }
-    
-    /* 🔥 FIX CLICK BLOCK ISSUE */
-		.container {
-		    position: relative;
-		    z-index: 10000 !important;
-		}
-		
-		.option {
-		    position: relative;
-		    z-index: 10001 !important;
-		}
-		
-		button {
-		    position: relative;
-		    z-index: 10002 !important;
-		}
-</style>
-```
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .exam-container { max-width: 900px; margin: 0 auto; }
+        .timer-box { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+        .question-nav { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
+        .question-nav .btn { width: 40px; height: 40px; padding: 0; line-height: 40px; }
+        .question-card { display: none; }
+        .question-card.active { display: block; }
+        .marked { background-color: #ffc107 !important; color: #000 !important; }
+        .answered { background-color: #198754 !important; color: #fff !important; }
+        .violation-alert { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: none; }
+    </style>
 </head>
-
 <body>
+    <% Exam exam = (Exam) request.getAttribute("exam");
+       List<Question> questions = (List<Question>) request.getAttribute("questions");
+       ExamAttempt attempt = (ExamAttempt) request.getAttribute("attempt");
+       List<Answer> savedAnswers = (List<Answer>) request.getAttribute("savedAnswers");
+       if (exam == null || questions == null || attempt == null) {
+           response.sendRedirect(request.getContextPath() + "/student/exams.jsp?error=Invalid+exam+session");
+           return;
+       }
+       // Build map of saved answers by questionId
+       Map<Integer, Answer> answerMap = new HashMap<>();
+       if (savedAnswers != null) {
+           for (Answer a : savedAnswers) answerMap.put(a.getQuestionId(), a);
+       }
+       int durationSeconds = exam.getDurationMinutes() * 60;
+    %>
 
-<div class="header">
-    <div>⏱ Time Remaining: <span id="time">60:00</span></div>
-    <div class="violations">Violations: <span id="vio">0</span> / 5</div>
-</div>
+    <!-- Timer -->
+    <div class="timer-box">
+        <div class="card border-danger">
+            <div class="card-body text-center">
+                <h5 class="card-title text-danger">Time Remaining</h5>
+                <h2 id="timer" class="text-danger fw-bold">--:--:--</h2>
+            </div>
+        </div>
+    </div>
 
-<div class="container">
-    <h2 id="questionText"></h2>
+    <!-- Violation Alert -->
+    <div id="violationAlert" class="alert alert-danger violation-alert">
+        <strong>Warning!</strong> Tab switch detected! This has been logged.
+    </div>
 
-```
-<div id="optionsContainer"></div>
+    <div class="container exam-container mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><%= exam.getExamTitle() %></h4>
+                <small>Duration: <%= exam.getDurationMinutes() %> minutes | Total Marks: <%= exam.getTotalMarks() %></small>
+            </div>
+            <div class="card-body">
+                <!-- Question Navigation -->
+                <div class="question-nav">
+                    <% for (int i = 0; i < questions.size(); i++) {
+                        Question q = questions.get(i);
+                        Answer saved = answerMap.get(q.getQuestionId());
+                        String btnClass = "btn-outline-secondary";
+                        if (saved != null && (saved.getSelectedOptionId() != null || saved.getSubjectiveAnswer() != null)) {
+                            btnClass = "btn-success answered";
+                        }
+                    %>
+                    <button type="button" class="btn <%= btnClass %>" onclick="showQuestion(<%= i %>)"><%= i + 1 %></button>
+                    <% } %>
+                </div>
 
-<div class="buttons">
-    <button onclick="prev()">Prev</button>
-    <button onclick="next()">Next</button>
-    <button class="submit-btn" onclick="submitExam()">Submit</button>
-</div>
-```
+                <form id="examForm" action="${pageContext.request.contextPath}/attempt" method="post">
+                    <input type="hidden" name="action" value="submit">
+                    <input type="hidden" name="attemptId" value="<%= attempt.getAttemptId() %>">
+                    <input type="hidden" name="examId" value="<%= exam.getExamId() %>">
 
-</div>
+                    <% for (int i = 0; i < questions.size(); i++) {
+                        Question q = questions.get(i);
+                        Answer saved = answerMap.get(q.getQuestionId());
+                    %>
+                    <div class="question-card <%= i == 0 ? "active" : "" %>" data-index="<%= i %>" data-question-id="<%= q.getQuestionId() %>">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5>Question <%= q.getQuestionNumber() %> <span class="badge bg-info"><%= q.getQuestionType() %></span></h5>
+                            <span class="badge bg-secondary"><%= q.getMarks() %> marks</span>
+                        </div>
+                        <p class="lead"><%= q.getQuestionText() %></p>
 
-<!-- JS Modules -->
-<script src="<%= request.getContextPath() %>/js/exam-security.js"></script>
-<script src="<%= request.getContextPath() %>/js/camera-monitoring.js"></script>
-<script src="<%= request.getContextPath() %>/js/audio-monitoring.js"></script>
-<script src="<%= request.getContextPath() %>/js/screen-security.js"></script>
-<script src="<%= request.getContextPath() %>/js/timer-module.js"></script>
-<script src="<%= request.getContextPath() %>/js/tab-tracking.js"></script>
-<script src="<%= request.getContextPath() %>/js/violation-tracker.js"></script>
-<script src="<%= request.getContextPath() %>/js/exam-mode-init.js"></script>
+                        <% if (q.isMCQ() && q.getOptions() != null) { %>
+                            <div class="list-group">
+                                <% for (Option opt : q.getOptions()) {
+                                    boolean isSelected = saved != null && saved.getSelectedOptionId() != null
+                                            && saved.getSelectedOptionId() == opt.getOptionId();
+                                %>
+                                <label class="list-group-item">
+                                    <input class="form-check-input me-2" type="radio"
+                                           name="q_<%= q.getQuestionId() %>"
+                                           value="<%= opt.getOptionId() %>"
+                                           <%= isSelected ? "checked" : "" %>
+                                           onchange="saveAnswer(<%= q.getQuestionId() %>, <%= opt.getOptionId() %>, null)">
+                                    <%= opt.getOptionText() %>
+                                </label>
+                                <% } %>
+                            </div>
+                        <% } else { %>
+                            <textarea class="form-control" rows="5" id="txt_<%= q.getQuestionId() %>"
+                                      onblur="saveAnswer(<%= q.getQuestionId() %>, null, this.value)"
+                                      placeholder="Type your answer here..."><%= saved != null && saved.getSubjectiveAnswer() != null ? saved.getSubjectiveAnswer() : "" %></textarea>
+                        <% } %>
 
-<script>
-/* ================= QUESTIONS ================= */
-const questions = [
-    {
-        id: 1,
-        q: "What is JVM?",
-        o: ["Java Virtual Machine", "Java Variable Method", "Joint VM", "None"],
-        a: 0
-    },
-    {
-        id: 2,
-        q: "Which is used for frontend?",
-        o: ["Java", "HTML", "MySQL", "C"],
-        a: 1
-    },
-    {
-        id: 3,
-        q: "CSS is used for?",
-        o: ["Logic", "Database", "Styling", "Backend"],
-        a: 2
-    }
-];
+                        <div class="mt-3 d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-warning btn-sm" onclick="markForReview(<%= i %>)">
+                                Mark for Review
+                            </button>
+                            <div>
+                                <% if (i > 0) { %>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="showQuestion(<%= i - 1 %>)">Previous</button>
+                                <% } %>
+                                <% if (i < questions.size() - 1) { %>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="showQuestion(<%= i + 1 %>)">Next</button>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
 
-let current = 0;
-let answers = {};
+                    <div class="mt-4 text-center">
+                        <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('Are you sure you want to submit?')">
+                            Submit Exam
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-/* ================= START EXAM ================= */
-window.onload = async () => {
+    <script>
+        const attemptId = <%= attempt.getAttemptId() %>;
+        let timeRemaining = <%= durationSeconds %>;
+        const timerEl = document.getElementById('timer');
 
-    const config = {
-        examTimeMinutes: 60,
-        maxViolations: 5,
-        enableCamera: false,
-        enableMicrophone: false,
-        enableTabTracking: true,
-        enableScreenSecurity: true,
-        autoSubmitOnViolations: true
-    };
+        // Timer countdown
+        function updateTimer() {
+            const hours = Math.floor(timeRemaining / 3600);
+            const minutes = Math.floor((timeRemaining % 3600) / 60);
+            const seconds = timeRemaining % 60;
+            timerEl.textContent = String(hours).padStart(2,'0') + ':' + String(minutes).padStart(2,'0') + ':' + String(seconds).padStart(2,'0');
 
-    try {
-        // 🔥 START EXAM MODE (THIS WAS MISSING)
-        await ExamModeInitializer.startExamMode(config);
+            if (timeRemaining <= 300) { // Last 5 minutes
+                timerEl.classList.add('text-danger');
+                timerEl.parentElement.parentElement.classList.add('border-danger');
+            }
 
-        console.log("✅ Exam Mode Started");
+            if (timeRemaining <= 0) {
+                alert('Time is up! Your exam will be submitted automatically.');
+                document.getElementById('examForm').submit();
+                return;
+            }
+            timeRemaining--;
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
 
-        // 🔥 FORCE FULLSCREEN
-        await document.documentElement.requestFullscreen();
-
-    } catch (e) {
-        console.warn("Exam init failed", e);
-    }
-
-    render();
-
-    // ✅ live violation tracking
-    setInterval(() => {
-        const state = ExamModeInitializer.getExamState();
-
-        document.getElementById("vio").innerText =
-            state ? state.violationCount : 0;
-
-        if (state && state.violationCount >= config.maxViolations) {
-            alert("Too many violations. Auto submitting.");
-            submitExam();
+        // Question navigation
+        function showQuestion(index) {
+            document.querySelectorAll('.question-card').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
         }
 
-    }, 1000);
-};
-//🔥 REMOVE INVISIBLE BLOCKING OVERLAY
-setTimeout(() => {
-    const elements = document.querySelectorAll('*');
-
-    elements.forEach(el => {
-        const style = window.getComputedStyle(el);
-
-        if (
-            style.position === 'fixed' &&
-            style.width === '100%' &&
-            style.height === '100%' &&
-            parseInt(style.zIndex) > 1000
-        ) {
-            console.log("Blocking overlay found → disabling:", el);
-            el.style.pointerEvents = 'none';
+        // Mark for review
+        function markForReview(index) {
+            const navBtn = document.querySelectorAll('.question-nav .btn')[index];
+            navBtn.classList.toggle('marked');
         }
-    });
 
-}, 2000);
-/* ================= RENDER ================= */
-function render() {
-    const q = questions[current];
+        // AJAX auto-save answer
+        function saveAnswer(questionId, optionId, textAnswer) {
+            const payload = {
+                attemptId: attemptId,
+                questionId: questionId,
+                selectedOptionId: optionId,
+                subjectiveAnswer: textAnswer
+            };
 
-    document.getElementById("questionText").innerText =
-        "Q" + (current + 1) + ": " + q.q;
+            fetch('${pageContext.request.contextPath}/answer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    // Update nav button to show answered
+                    const card = document.querySelector('[data-question-id="' + questionId + '"]');
+                    const idx = parseInt(card.dataset.index);
+                    document.querySelectorAll('.question-nav .btn')[idx].classList.remove('btn-outline-secondary');
+                    document.querySelectorAll('.question-nav .btn')[idx].classList.add('btn-success', 'answered');
+                }
+            })
+            .catch(err => console.error('Auto-save failed:', err));
+        }
 
-    const container = document.getElementById("optionsContainer");
-    container.innerHTML = "";
+        // Anti-cheating: Tab switch detection
+        let violationCount = 0;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                violationCount++;
+                document.getElementById('violationAlert').style.display = 'block';
+                setTimeout(() => document.getElementById('violationAlert').style.display = 'none', 5000);
 
-    for (let i = 0; i < q.o.length; i++) {
-        const div = document.createElement("div");
-        div.className = "option";
+                // Log violation via AJAX
+                fetch('${pageContext.request.contextPath}/violation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'type=TAB_SWITCH&attemptId=' + attemptId + '&count=' + violationCount
+                });
+            }
+        });
 
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = "ans";
-        input.value = i;
+        // Prevent right-click
+        document.addEventListener('contextmenu', e => e.preventDefault());
 
-        if (answers[q.id] === i) input.checked = true;
-
-        input.onchange = () => {
-            answers[q.id] = i;
-        };
-
-        div.appendChild(input);
-        div.appendChild(document.createTextNode(" " + q.o[i]));
-
-        container.appendChild(div);
-    }
-}
-
-/* ================= NAVIGATION ================= */
-function next() {
-    if (current < questions.length - 1) {
-        current++;
-        render();
-    }
-}
-
-function prev() {
-    if (current > 0) {
-        current--;
-        render();
-    }
-}
-
-/* ================= SUBMIT ================= */
-function submitExam() {
-    let score = 0;
-
-    questions.forEach(q => {
-        if (answers[q.id] === q.a) score++;
-    });
-
-    const violations = ExamModeInitializer.getViolationLog();
-
-    alert(
-        "Score: " + score + "/" + questions.length +
-        "\nViolations: " + violations.length
-    );
-}
-
-window.addEventListener('exam-violation', (e) => {
-    console.log("🚨 VIOLATION:", e.detail);
-});
-</script>
-
+        // Prevent copy-paste
+        document.addEventListener('copy', e => e.preventDefault());
+        document.addEventListener('paste', e => e.preventDefault());
+        document.addEventListener('cut', e => e.preventDefault());
+    </script>
 </body>
 </html>
+
